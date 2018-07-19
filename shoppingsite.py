@@ -6,10 +6,10 @@ put melons in a shopping cart.
 Authors: Joel Burton, Christian Fernandez, Meggie Mahnken, Katie Byers.
 """
 
-from flask import Flask, render_template, redirect, flash, session
-import jinja2
+from flask import Flask, render_template, redirect, flash, session, request
 
 import melons
+from customers import get_by_email
 
 app = Flask(__name__)
 
@@ -22,7 +22,7 @@ app.secret_key = 'this-should-be-something-unguessable'
 # set an attribute of the Jinja environment that says to make this an
 # error.
 
-app.jinja_env.undefined = jinja2.StrictUndefined
+# app.jinja_env.undefined = jinja2.StrictUndefined
 
 
 @app.route("/")
@@ -152,7 +152,25 @@ def process_login():
     # - if they don't, flash a failure message and redirect back to "/login"
     # - do the same if a Customer with that email doesn't exist
 
-    return "Oops! This needs to be implemented"
+    username = request.form.get("email")
+    password = request.form.get("password")
+
+    print(username, password)
+
+    customer_object = get_by_email(username)
+    print(customer_object)
+
+    if customer_object:
+        if password == customer_object.password:
+            session["logged_in_customer_email"] = username
+            flash("Login successful!")
+            return redirect("/melons")
+        else:
+            flash("Incorrect password")
+            return redirect ("/login")
+    else:
+            flash("No customer with that email found")
+            return redirect ("/login")
 
 
 @app.route("/checkout")
