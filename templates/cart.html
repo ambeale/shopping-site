@@ -3,6 +3,7 @@
 
 {% block body %}
 
+
     <table class="table table-striped">
         <thead>
         <tr>
@@ -13,7 +14,16 @@
         </tr>
         </thead>
         <tbody>
-        <tr>
+                {% for melon in melon_list %}
+                <tr>
+                    <td>{{ melon.common_name }}</td>
+                    <td>{{ melon.quantity }}</td>
+                    <td>{{ melon.price_str() }}</td>
+                    <td>{{ "${:.2f}".format(melon.totalprice) }}</td>
+                </tr>
+                {% endfor %}
+        </tbody>
+        <!-- <tr>
             <td>Ancient Watermelon</td>
             <td>5</td>
             <td>$3.00</td>
@@ -37,10 +47,10 @@
             <td>$3.00</td>
             <td>$6.00</td>
         </tr>
-        </tbody>
+        </tbody> -->
     </table>
 
-    <h3>Total: $27.00</h3>
+    <h3>Total: {{ "${:.2f}".format(total_cost) }} </h3>
 
     <a href="/checkout" class="btn btn-large btn-primary">Check Out</a>
 
